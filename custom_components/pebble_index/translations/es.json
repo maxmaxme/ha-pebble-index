@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Pebble Index",
-        "description": "Cómo obtener el token:\n\n1. Abre [index.repebble.com](https://index.repebble.com) e inicia sesión con la misma cuenta que en la aplicación móvil de Pebble.\n2. Pulsa **F12** (macOS: **⌥⌘I**) y ve a la pestaña **Console**.\n3. Pega esta línea y pulsa Enter:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```\n\n4. Copia la cadena que aparece, sin las comillas que la rodean.\n5. Pégala abajo.\n\nEl token se renueva por sí solo, así que este paso es único. Ten en cuenta que da acceso completo a tu cuenta de Index — también a las notas y transcripciones, no solo a la lista de la compra.",
+        "description": "Cómo obtener el token:\n\n1. Abre {index_link} e inicia sesión con la misma cuenta que en la aplicación móvil de Pebble.\n2. Pulsa **F12** (macOS: **⌥⌘I**) y ve a la pestaña **Console**.\n3. Pega esta línea y pulsa Enter:\n\n```\n{snippet}\n```\n\n4. Copia la cadena que aparece, sin las comillas que la rodean.\n5. Pégala abajo.\n\nEl token se renueva por sí solo, así que este paso es único. Ten en cuenta que da acceso completo a tu cuenta de Index — también a las notas y transcripciones, no solo a la lista de la compra.",
         "data": {
           "refresh_token": "Token de actualización de Firebase"
         },
@@ -13,7 +13,7 @@
       },
       "reauth_confirm": {
         "title": "Pebble Index",
-        "description": "El token guardado ha dejado de funcionar. Vuelve a iniciar sesión en [index.repebble.com](https://index.repebble.com), ejecuta la misma línea en la consola y pega el token nuevo:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```",
+        "description": "El token guardado ha dejado de funcionar. Vuelve a iniciar sesión en {index_link}, ejecuta la misma línea en la consola y pega el token nuevo:\n\n```\n{snippet}\n```",
         "data": {
           "refresh_token": "Token de actualización de Firebase"
         }

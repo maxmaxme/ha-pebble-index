@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Pebble Index",
-        "description": "Zo krijg je het token:\n\n1. Open [index.repebble.com](https://index.repebble.com) en meld je aan met hetzelfde account als in de Pebble-app.\n2. Druk op **F12** (macOS: **⌥⌘I**) en ga naar het tabblad **Console**.\n3. Plak deze regel en druk op Enter:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```\n\n4. Kopieer de weergegeven tekst, zonder de aanhalingstekens eromheen.\n5. Plak die hieronder.\n\nHet token vernieuwt zichzelf, dus dit is een eenmalige stap. Let op: het geeft volledige toegang tot je Index-account — ook tot notities en transcripties, niet alleen tot de boodschappenlijst.",
+        "description": "Zo krijg je het token:\n\n1. Open {index_link} en meld je aan met hetzelfde account als in de Pebble-app.\n2. Druk op **F12** (macOS: **⌥⌘I**) en ga naar het tabblad **Console**.\n3. Plak deze regel en druk op Enter:\n\n```\n{snippet}\n```\n\n4. Kopieer de weergegeven tekst, zonder de aanhalingstekens eromheen.\n5. Plak die hieronder.\n\nHet token vernieuwt zichzelf, dus dit is een eenmalige stap. Let op: het geeft volledige toegang tot je Index-account — ook tot notities en transcripties, niet alleen tot de boodschappenlijst.",
         "data": {
           "refresh_token": "Firebase-vernieuwingstoken"
         },
@@ -13,7 +13,7 @@
       },
       "reauth_confirm": {
         "title": "Pebble Index",
-        "description": "Het opgeslagen token werkt niet meer. Meld je opnieuw aan op [index.repebble.com](https://index.repebble.com), voer dezelfde regel uit in de console en plak het nieuwe token:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```",
+        "description": "Het opgeslagen token werkt niet meer. Meld je opnieuw aan op {index_link}, voer dezelfde regel uit in de console en plak het nieuwe token:\n\n```\n{snippet}\n```",
         "data": {
           "refresh_token": "Firebase-vernieuwingstoken"
         }

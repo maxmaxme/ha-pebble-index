@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Pebble Index",
-        "description": "Comment obtenir le jeton :\n\n1. Ouvrez [index.repebble.com](https://index.repebble.com) et connectez-vous avec le même compte que dans l'application mobile Pebble.\n2. Appuyez sur **F12** (macOS : **⌥⌘I**) puis allez dans l'onglet **Console**.\n3. Collez cette ligne et appuyez sur Entrée :\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```\n\n4. Copiez la chaîne affichée, sans les guillemets qui l'entourent.\n5. Collez-la ci-dessous.\n\nLe jeton se renouvelle tout seul, cette étape est donc unique. À noter : il donne un accès complet à votre compte Index — aux notes et aux transcriptions aussi, pas seulement à la liste de courses.",
+        "description": "Comment obtenir le jeton :\n\n1. Ouvrez {index_link} et connectez-vous avec le même compte que dans l'application mobile Pebble.\n2. Appuyez sur **F12** (macOS : **⌥⌘I**) puis allez dans l'onglet **Console**.\n3. Collez cette ligne et appuyez sur Entrée :\n\n```\n{snippet}\n```\n\n4. Copiez la chaîne affichée, sans les guillemets qui l'entourent.\n5. Collez-la ci-dessous.\n\nLe jeton se renouvelle tout seul, cette étape est donc unique. À noter : il donne un accès complet à votre compte Index — aux notes et aux transcriptions aussi, pas seulement à la liste de courses.",
         "data": {
           "refresh_token": "Jeton de rafraîchissement Firebase"
         },
@@ -13,7 +13,7 @@
       },
       "reauth_confirm": {
         "title": "Pebble Index",
-        "description": "Le jeton enregistré ne fonctionne plus. Reconnectez-vous sur [index.repebble.com](https://index.repebble.com), exécutez la même ligne dans la console et collez le nouveau jeton :\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```",
+        "description": "Le jeton enregistré ne fonctionne plus. Reconnectez-vous sur {index_link}, exécutez la même ligne dans la console et collez le nouveau jeton :\n\n```\n{snippet}\n```",
         "data": {
           "refresh_token": "Jeton de rafraîchissement Firebase"
         }

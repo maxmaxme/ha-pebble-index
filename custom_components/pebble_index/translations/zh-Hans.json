@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Pebble Index",
-        "description": "如何获取令牌：\n\n1. 打开 [index.repebble.com](https://index.repebble.com)，用与 Pebble 手机应用相同的账号登录。\n2. 按 **F12**（macOS 为 **⌥⌘I**），切换到 **Console** 标签页。\n3. 粘贴下面这行并按回车：\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```\n\n4. 复制输出的字符串，不要包含两端的引号。\n5. 粘贴到下方输入框。\n\n令牌会自动续期，因此这一步只需做一次。请注意：它拥有该 Index 账号的完整访问权限——包括笔记和转录内容，而不仅是购物清单。",
+        "description": "如何获取令牌：\n\n1. 打开 {index_link}，用与 Pebble 手机应用相同的账号登录。\n2. 按 **F12**（macOS 为 **⌥⌘I**），切换到 **Console** 标签页。\n3. 粘贴下面这行并按回车：\n\n```\n{snippet}\n```\n\n4. 复制输出的字符串，不要包含两端的引号。\n5. 粘贴到下方输入框。\n\n令牌会自动续期，因此这一步只需做一次。请注意：它拥有该 Index 账号的完整访问权限——包括笔记和转录内容，而不仅是购物清单。",
         "data": {
           "refresh_token": "Firebase 刷新令牌"
         },
@@ -13,7 +13,7 @@
       },
       "reauth_confirm": {
         "title": "Pebble Index",
-        "description": "保存的令牌已失效。请重新登录 [index.repebble.com](https://index.repebble.com)，在控制台执行同样的那行代码，然后粘贴新令牌：\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```",
+        "description": "保存的令牌已失效。请重新登录 {index_link}，在控制台执行同样的那行代码，然后粘贴新令牌：\n\n```\n{snippet}\n```",
         "data": {
           "refresh_token": "Firebase 刷新令牌"
         }

@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Pebble Index",
-        "description": "So bekommst du das Token:\n\n1. Öffne [index.repebble.com](https://index.repebble.com) und melde dich mit demselben Konto an wie in der Pebble-App.\n2. Drücke **F12** (macOS: **⌥⌘I**) und wechsle auf den Tab **Console**.\n3. Füge diese Zeile ein und drücke Enter:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```\n\n4. Kopiere die ausgegebene Zeichenkette — ohne die umgebenden Anführungszeichen.\n5. Füge sie unten ein.\n\nDas Token erneuert sich selbst, dieser Schritt ist also einmalig. Beachte: es gewährt vollen Zugriff auf dein Index-Konto — auch auf Notizen und Transkripte, nicht nur auf die Einkaufsliste.",
+        "description": "So bekommst du das Token:\n\n1. Öffne {index_link} und melde dich mit demselben Konto an wie in der Pebble-App.\n2. Drücke **F12** (macOS: **⌥⌘I**) und wechsle auf den Tab **Console**.\n3. Füge diese Zeile ein und drücke Enter:\n\n```\n{snippet}\n```\n\n4. Kopiere die ausgegebene Zeichenkette — ohne die umgebenden Anführungszeichen.\n5. Füge sie unten ein.\n\nDas Token erneuert sich selbst, dieser Schritt ist also einmalig. Beachte: es gewährt vollen Zugriff auf dein Index-Konto — auch auf Notizen und Transkripte, nicht nur auf die Einkaufsliste.",
         "data": {
           "refresh_token": "Firebase-Refresh-Token"
         },
@@ -13,7 +13,7 @@
       },
       "reauth_confirm": {
         "title": "Pebble Index",
-        "description": "Das gespeicherte Token funktioniert nicht mehr. Melde dich erneut bei [index.repebble.com](https://index.repebble.com) an, führe dieselbe Zeile in der Konsole aus und füge das neue Token ein:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```",
+        "description": "Das gespeicherte Token funktioniert nicht mehr. Melde dich erneut bei {index_link} an, führe dieselbe Zeile in der Konsole aus und füge das neue Token ein:\n\n```\n{snippet}\n```",
         "data": {
           "refresh_token": "Firebase-Refresh-Token"
         }

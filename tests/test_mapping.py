@@ -5,13 +5,14 @@ imports nothing but the module under test, so it fails loudly if Core Devices
 change the document schema and the mapping is adjusted wrongly.
 """
 
+import json
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
-sys.path.insert(
-    0, str(Path(__file__).resolve().parents[1] / "custom_components" / "pebble_index")
-)
+COMPONENT = Path(__file__).resolve().parents[1] / "custom_components" / "pebble_index"
+
+sys.path.insert(0, str(COMPONENT))
 
 from firestore import (  # noqa: E402
     KIND_CHECKLIST,
@@ -152,6 +153,33 @@ def test_untitled_list_falls_back_to_its_id():
     document = {"name": f"{PREFIX}/lists/uid42/lists/list_x", "fields": {}}
     definition = decode_list(document)
     assert definition is not None and definition.title == "list_x"
+
+
+def test_manifest_keys_are_sorted():
+    """hassfest wants domain, name, then alphabetical order."""
+    keys = list(json.loads((COMPONENT / "manifest.json").read_text()))
+    assert keys[:2] == ["domain", "name"], keys
+    assert keys[2:] == sorted(keys[2:]), keys
+
+
+def test_translations_carry_no_urls():
+    """hassfest rejects URLs in translation strings.
+
+    They belong in `description_placeholders`, supplied by the config flow.
+    """
+
+    def strings(node):
+        if isinstance(node, dict):
+            for value in node.values():
+                yield from strings(value)
+        elif isinstance(node, str):
+            yield node
+
+    files = [COMPONENT / "strings.json", *(COMPONENT / "translations").glob("*.json")]
+    assert len(files) == 13, files
+    for path in files:
+        for text in strings(json.loads(path.read_text(encoding="utf-8"))):
+            assert "http" not in text, (path.name, text)
 
 
 if __name__ == "__main__":

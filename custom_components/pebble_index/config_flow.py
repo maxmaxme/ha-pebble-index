@@ -17,9 +17,20 @@ from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import PebbleIndexApi, PebbleIndexAuthError, PebbleIndexError
-from .const import CONF_REFRESH_TOKEN, DOMAIN
+from .const import CONF_REFRESH_TOKEN, DOMAIN, FIREBASE_API_KEY, INDEX_WEB_URL
 
 STEP_SCHEMA = vol.Schema({vol.Required(CONF_REFRESH_TOKEN): str})
+
+# Translation strings may not contain URLs (hassfest rejects them), so the link
+# and the console one-liner are supplied at runtime — which also keeps the
+# snippet out of all twelve translation files.
+PLACEHOLDERS = {
+    "index_link": f"[index.repebble.com]({INDEX_WEB_URL})",
+    "snippet": (
+        f"JSON.parse(localStorage.getItem('firebase:authUser:"
+        f"{FIREBASE_API_KEY}:[DEFAULT]')).stsTokenManager.refreshToken"
+    ),
+}
 
 
 class PebbleIndexConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -44,7 +55,10 @@ class PebbleIndexConfigFlow(ConfigFlow, domain=DOMAIN):
                 )
 
         return self.async_show_form(
-            step_id="user", data_schema=STEP_SCHEMA, errors=errors
+            step_id="user",
+            data_schema=STEP_SCHEMA,
+            errors=errors,
+            description_placeholders=PLACEHOLDERS,
         )
 
     async def async_step_reauth(
@@ -73,7 +87,10 @@ class PebbleIndexConfigFlow(ConfigFlow, domain=DOMAIN):
                     )
 
         return self.async_show_form(
-            step_id="reauth_confirm", data_schema=STEP_SCHEMA, errors=errors
+            step_id="reauth_confirm",
+            data_schema=STEP_SCHEMA,
+            errors=errors,
+            description_placeholders=PLACEHOLDERS,
         )
 
     async def _async_verify(self, token: str) -> tuple[str | None, dict[str, str]]:
