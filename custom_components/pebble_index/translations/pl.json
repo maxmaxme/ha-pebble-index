@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Pebble Index",
+        "description": "Jak zdobyć token:\n\n1. Otwórz [index.repebble.com](https://index.repebble.com) i zaloguj się tym samym kontem, co w aplikacji mobilnej Pebble.\n2. Naciśnij **F12** (macOS: **⌥⌘I**) i przejdź na kartę **Console**.\n3. Wklej tę linię i naciśnij Enter:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```\n\n4. Skopiuj wypisany ciąg znaków — bez otaczających go cudzysłowów.\n5. Wklej go poniżej.\n\nToken odnawia się sam, więc to krok jednorazowy. Uwaga: daje pełny dostęp do konta Index — także do notatek i transkrypcji, nie tylko do listy zakupów.",
+        "data": {
+          "refresh_token": "Token odświeżania Firebase"
+        },
+        "data_description": {
+          "refresh_token": "Długi ciąg znaków zaczynający się od A… — wklej bez cudzysłowów."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Pebble Index",
+        "description": "Zapisany token przestał działać. Zaloguj się ponownie na [index.repebble.com](https://index.repebble.com), wykonaj tę samą linię w konsoli i wklej nowy token:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```",
+        "data": {
+          "refresh_token": "Token odświeżania Firebase"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Firebase odrzucił ten token. Skopiuj go ponownie ze świeżo zalogowanej karty index.repebble.com.",
+      "cannot_connect": "Nie udało się połączyć z Firebase. Sprawdź dostęp Home Assistanta do internetu i spróbuj ponownie.",
+      "wrong_account": "Ten token należy do innego konta Pebble Index niż już skonfigurowane."
+    },
+    "abort": {
+      "already_configured": "To konto Pebble Index jest już skonfigurowane.",
+      "reauth_successful": "Pebble Index został ponownie uwierzytelniony."
+    }
+  }
+}

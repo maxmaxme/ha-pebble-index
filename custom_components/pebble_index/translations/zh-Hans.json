@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Pebble Index",
+        "description": "如何获取令牌：\n\n1. 打开 [index.repebble.com](https://index.repebble.com)，用与 Pebble 手机应用相同的账号登录。\n2. 按 **F12**（macOS 为 **⌥⌘I**），切换到 **Console** 标签页。\n3. 粘贴下面这行并按回车：\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```\n\n4. 复制输出的字符串，不要包含两端的引号。\n5. 粘贴到下方输入框。\n\n令牌会自动续期，因此这一步只需做一次。请注意：它拥有该 Index 账号的完整访问权限——包括笔记和转录内容，而不仅是购物清单。",
+        "data": {
+          "refresh_token": "Firebase 刷新令牌"
+        },
+        "data_description": {
+          "refresh_token": "一串以 A… 开头的长字符串——粘贴时不要带引号。"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Pebble Index",
+        "description": "保存的令牌已失效。请重新登录 [index.repebble.com](https://index.repebble.com)，在控制台执行同样的那行代码，然后粘贴新令牌：\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```",
+        "data": {
+          "refresh_token": "Firebase 刷新令牌"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Firebase 拒绝了该令牌。请从刚刚登录的 index.repebble.com 标签页重新复制。",
+      "cannot_connect": "无法连接 Firebase。请检查 Home Assistant 的网络连接后重试。",
+      "wrong_account": "该令牌属于另一个 Pebble Index 账号，与已配置的账号不符。"
+    },
+    "abort": {
+      "already_configured": "该 Pebble Index 账号已配置。",
+      "reauth_successful": "Pebble Index 已重新认证。"
+    }
+  }
+}

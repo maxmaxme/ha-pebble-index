@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Pebble Index",
+        "description": "トークンの取得方法:\n\n1. [index.repebble.com](https://index.repebble.com) を開き、Pebble モバイルアプリと同じアカウントでサインインします。\n2. **F12**（macOS は **⌥⌘I**）を押し、**Console** タブに切り替えます。\n3. 次の行を貼り付けて Enter を押します:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```\n\n4. 表示された文字列を、前後の引用符を含めずにコピーします。\n5. 下の欄に貼り付けます。\n\nトークンは自動更新されるため、この操作は一度だけです。なお、このトークンは Index アカウント全体へのアクセス権を持ちます — 買い物リストだけでなく、メモや文字起こしも含みます。",
+        "data": {
+          "refresh_token": "Firebase リフレッシュトークン"
+        },
+        "data_description": {
+          "refresh_token": "A… で始まる長い文字列です — 引用符なしで貼り付けてください。"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Pebble Index",
+        "description": "保存されたトークンが使えなくなりました。[index.repebble.com](https://index.repebble.com) に再度サインインし、同じ行をコンソールで実行して、新しいトークンを貼り付けてください:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```",
+        "data": {
+          "refresh_token": "Firebase リフレッシュトークン"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Firebase がこのトークンを拒否しました。サインインし直した index.repebble.com のタブから再度コピーしてください。",
+      "cannot_connect": "Firebase に接続できませんでした。Home Assistant のインターネット接続を確認して再試行してください。",
+      "wrong_account": "このトークンは、すでに設定済みのものとは別の Pebble Index アカウントのものです。"
+    },
+    "abort": {
+      "already_configured": "この Pebble Index アカウントはすでに設定されています。",
+      "reauth_successful": "Pebble Index を再認証しました。"
+    }
+  }
+}

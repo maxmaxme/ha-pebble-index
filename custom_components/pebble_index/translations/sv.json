@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Pebble Index",
+        "description": "Så får du token:\n\n1. Öppna [index.repebble.com](https://index.repebble.com) och logga in med samma konto som i Pebble-appen.\n2. Tryck **F12** (macOS: **⌥⌘I**) och gå till fliken **Console**.\n3. Klistra in den här raden och tryck Enter:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```\n\n4. Kopiera strängen som skrivs ut — utan citattecknen runt om.\n5. Klistra in den nedan.\n\nToken förnyar sig själv, så det här är ett engångssteg. Observera: den ger full åtkomst till ditt Index-konto — även anteckningar och transkriptioner, inte bara inköpslistan.",
+        "data": {
+          "refresh_token": "Firebase-uppdateringstoken"
+        },
+        "data_description": {
+          "refresh_token": "En lång sträng som börjar med A… — klistra in utan citattecken."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Pebble Index",
+        "description": "Den sparade token fungerar inte längre. Logga in på [index.repebble.com](https://index.repebble.com) igen, kör samma rad i konsolen och klistra in den nya token:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```",
+        "data": {
+          "refresh_token": "Firebase-uppdateringstoken"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Firebase avvisade denna token. Kopiera den igen från en nyinloggad flik på index.repebble.com.",
+      "cannot_connect": "Kunde inte nå Firebase. Kontrollera Home Assistants internetanslutning och försök igen.",
+      "wrong_account": "Denna token hör till ett annat Pebble Index-konto än det som redan är konfigurerat."
+    },
+    "abort": {
+      "already_configured": "Det här Pebble Index-kontot är redan konfigurerat.",
+      "reauth_successful": "Pebble Index har autentiserats på nytt."
+    }
+  }
+}

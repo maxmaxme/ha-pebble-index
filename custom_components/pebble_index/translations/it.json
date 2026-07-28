@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Pebble Index",
+        "description": "Come ottenere il token:\n\n1. Apri [index.repebble.com](https://index.repebble.com) e accedi con lo stesso account dell'app mobile Pebble.\n2. Premi **F12** (macOS: **⌥⌘I**) e passa alla scheda **Console**.\n3. Incolla questa riga e premi Invio:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```\n\n4. Copia la stringa mostrata, senza le virgolette che la racchiudono.\n5. Incollala qui sotto.\n\nIl token si rinnova da solo, quindi questo passaggio è una tantum. Attenzione: dà accesso completo al tuo account Index — anche a note e trascrizioni, non solo alla lista della spesa.",
+        "data": {
+          "refresh_token": "Token di aggiornamento Firebase"
+        },
+        "data_description": {
+          "refresh_token": "Una stringa lunga che inizia con A… — incollala senza virgolette."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Pebble Index",
+        "description": "Il token salvato non funziona più. Accedi di nuovo su [index.repebble.com](https://index.repebble.com), esegui la stessa riga nella console e incolla il nuovo token:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```",
+        "data": {
+          "refresh_token": "Token di aggiornamento Firebase"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Firebase ha rifiutato questo token. Copialo di nuovo da una scheda index.repebble.com con accesso appena effettuato.",
+      "cannot_connect": "Impossibile raggiungere Firebase. Verifica l'accesso a Internet di Home Assistant e riprova.",
+      "wrong_account": "Questo token appartiene a un account Pebble Index diverso da quello già configurato."
+    },
+    "abort": {
+      "already_configured": "Questo account Pebble Index è già configurato.",
+      "reauth_successful": "Pebble Index è stato ri-autenticato."
+    }
+  }
+}

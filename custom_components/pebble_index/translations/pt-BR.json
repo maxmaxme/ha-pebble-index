@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Pebble Index",
+        "description": "Como obter o token:\n\n1. Abra [index.repebble.com](https://index.repebble.com) e entre com a mesma conta do aplicativo Pebble.\n2. Pressione **F12** (macOS: **⌥⌘I**) e vá para a aba **Console**.\n3. Cole esta linha e pressione Enter:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```\n\n4. Copie a string exibida, sem as aspas ao redor.\n5. Cole-a abaixo.\n\nO token se renova sozinho, então este passo é único. Atenção: ele dá acesso completo à sua conta do Index — também a notas e transcrições, não só à lista de compras.",
+        "data": {
+          "refresh_token": "Token de atualização do Firebase"
+        },
+        "data_description": {
+          "refresh_token": "Uma string longa que começa com A… — cole sem aspas."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Pebble Index",
+        "description": "O token salvo parou de funcionar. Entre novamente em [index.repebble.com](https://index.repebble.com), execute a mesma linha no console e cole o novo token:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```",
+        "data": {
+          "refresh_token": "Token de atualização do Firebase"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "O Firebase rejeitou este token. Copie-o novamente de uma aba do index.repebble.com recém-autenticada.",
+      "cannot_connect": "Não foi possível acessar o Firebase. Verifique o acesso à internet do Home Assistant e tente de novo.",
+      "wrong_account": "Este token pertence a uma conta do Pebble Index diferente da já configurada."
+    },
+    "abort": {
+      "already_configured": "Esta conta do Pebble Index já está configurada.",
+      "reauth_successful": "O Pebble Index foi reautenticado."
+    }
+  }
+}

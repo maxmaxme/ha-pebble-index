@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Pebble Index",
+        "description": "Как получить токен:\n\n1. Откройте [index.repebble.com](https://index.repebble.com) и войдите тем же аккаунтом, что и в мобильном приложении Pebble.\n2. Нажмите **F12** (на macOS — **⌥⌘I**) и перейдите на вкладку **Console**.\n3. Вставьте эту строку и нажмите Enter:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```\n\n4. Скопируйте выведенную строку — без кавычек по краям.\n5. Вставьте её в поле ниже.\n\nТокен обновляется сам, поэтому шаг разовый. Учтите: он даёт полный доступ к аккаунту Index — к заметкам и транскриптам тоже, не только к списку покупок.",
+        "data": {
+          "refresh_token": "Refresh-токен Firebase"
+        },
+        "data_description": {
+          "refresh_token": "Длинная строка, начинается с A… — вставляйте без кавычек."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Pebble Index",
+        "description": "Сохранённый токен перестал работать. Войдите на [index.repebble.com](https://index.repebble.com) заново, выполните ту же строку в консоли и вставьте новый токен:\n\n```\nJSON.parse(localStorage.getItem('firebase:authUser:AIzaSyBZ9Cdvwwv9At2lPmc8TxyyEqSXGXejGvc:[DEFAULT]')).stsTokenManager.refreshToken\n```",
+        "data": {
+          "refresh_token": "Refresh-токен Firebase"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Firebase отклонил этот токен. Скопируйте его заново со свежей залогиненной вкладки index.repebble.com.",
+      "cannot_connect": "Не удалось связаться с Firebase. Проверьте доступ Home Assistant в интернет и повторите.",
+      "wrong_account": "Этот токен принадлежит другому аккаунту Pebble Index, не тому, который уже настроен."
+    },
+    "abort": {
+      "already_configured": "Этот аккаунт Pebble Index уже настроен.",
+      "reauth_successful": "Pebble Index переавторизован."
+    }
+  }
+}
