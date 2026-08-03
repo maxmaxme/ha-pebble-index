@@ -18,7 +18,13 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import PebbleIndexApi, PebbleIndexAuthError, PebbleIndexError
-from .const import CONF_REFRESH_TOKEN, DOMAIN, UPDATE_INTERVAL_SEC
+from .const import (
+    CONF_ENCRYPTION_KEY,
+    CONF_REFRESH_TOKEN,
+    DOMAIN,
+    UPDATE_INTERVAL_SEC,
+)
+from .crypto import EncryptionKeyError
 from .firestore import Item, ListDefinition
 
 _LOGGER = logging.getLogger(__name__)
@@ -62,23 +68,33 @@ class PebbleIndexCoordinator(DataUpdateCoordinator[dict[str, list[Item]]]):
 
 async def async_setup_entry(hass: HomeAssistant, entry: PebbleIndexConfigEntry) -> bool:
     """Set up Pebble Index from a config entry."""
-    api = PebbleIndexApi(
-        async_get_clientsession(hass), entry.data[CONF_REFRESH_TOKEN]
-    )
+    # The key is editable after setup, so options win over the original data.
+    key = entry.options.get(CONF_ENCRYPTION_KEY) or entry.data.get(CONF_ENCRYPTION_KEY)
     try:
+        api = PebbleIndexApi(
+            async_get_clientsession(hass), entry.data[CONF_REFRESH_TOKEN], key
+        )
         await api.async_authenticate()
         lists = await api.async_lists()
     except PebbleIndexAuthError as err:
         raise ConfigEntryAuthFailed(str(err)) from err
-    except PebbleIndexError as err:
+    except (PebbleIndexError, EncryptionKeyError) as err:
         raise ConfigEntryNotReady(str(err)) from err
 
     coordinator = PebbleIndexCoordinator(hass, entry, api, lists)
     await coordinator.async_config_entry_first_refresh()
     entry.runtime_data = coordinator
 
+    # Entering the encryption key later has to take effect without a restart.
+    entry.async_on_unload(entry.add_update_listener(_async_reload))
+
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
+
+
+async def _async_reload(hass: HomeAssistant, entry: PebbleIndexConfigEntry) -> None:
+    """Reload after the options changed."""
+    await hass.config_entries.async_reload(entry.entry_id)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: PebbleIndexConfigEntry) -> bool:

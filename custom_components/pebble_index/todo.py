@@ -94,6 +94,7 @@ class PebbleIndexList(CoordinatorEntity[PebbleIndexCoordinator], TodoListEntity)
                 item.summary or "",
                 item.status == TodoItemStatus.COMPLETED,
                 _as_utc(item),
+                self._list.kind,
             )
         )
 

@@ -5,10 +5,12 @@
         "title": "Pebble Index",
         "description": "トークンの取得方法:\n\n1. {index_link} を開き、Pebble モバイルアプリと同じアカウントでサインインします。\n2. **F12**（macOS は **⌥⌘I**）を押し、**Console** タブに切り替えます。\n3. 次の行を貼り付けて Enter を押します:\n\n```\n{snippet}\n```\n\n4. 表示された文字列を、前後の引用符を含めずにコピーします。\n5. 下の欄に貼り付けます。\n\nトークンは自動更新されるため、この操作は一度だけです。なお、このトークンは Index アカウント全体へのアクセス権を持ちます — 買い物リストだけでなく、メモや文字起こしも含みます。",
         "data": {
-          "refresh_token": "Firebase リフレッシュトークン"
+          "refresh_token": "Firebase リフレッシュトークン",
+          "encryption_key": "暗号化キー（アプリで有効にしている場合のみ）"
         },
         "data_description": {
-          "refresh_token": "A… で始まる長い文字列です — 引用符なしで貼り付けてください。"
+          "refresh_token": "A… で始まる長い文字列です — 引用符なしで貼り付けてください。",
+          "encryption_key": "Pebble アプリ → Index 設定 → Encryption → Copy Key。"
         }
       },
       "reauth_confirm": {
@@ -22,11 +24,29 @@
     "error": {
       "invalid_auth": "Firebase がこのトークンを拒否しました。サインインし直した index.repebble.com のタブから再度コピーしてください。",
       "cannot_connect": "Firebase に接続できませんでした。Home Assistant のインターネット接続を確認して再試行してください。",
-      "wrong_account": "このトークンは、すでに設定済みのものとは別の Pebble Index アカウントのものです。"
+      "wrong_account": "このトークンは、すでに設定済みのものとは別の Pebble Index アカウントのものです。",
+      "invalid_key": "このキーは使用できません。アプリの Copy Key は 32 バイトの base64 を返します。"
     },
     "abort": {
       "already_configured": "この Pebble Index アカウントはすでに設定されています。",
       "reauth_successful": "Pebble Index を再認証しました。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Pebble Index",
+        "description": "この Index アカウントの暗号化キーを貼り付けます: Pebble アプリ → Index 設定 → Encryption → Copy Key。暗号化していない場合は空のままにしてください。",
+        "data": {
+          "encryption_key": "暗号化キー（アプリで有効にしている場合のみ）"
+        },
+        "data_description": {
+          "encryption_key": "Pebble アプリ → Index 設定 → Encryption → Copy Key。"
+        }
+      }
+    },
+    "error": {
+      "invalid_key": "このキーは使用できません。アプリの Copy Key は 32 バイトの base64 を返します。"
     }
   }
 }

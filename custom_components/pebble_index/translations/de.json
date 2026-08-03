@@ -5,10 +5,12 @@
         "title": "Pebble Index",
         "description": "So bekommst du das Token:\n\n1. Öffne {index_link} und melde dich mit demselben Konto an wie in der Pebble-App.\n2. Drücke **F12** (macOS: **⌥⌘I**) und wechsle auf den Tab **Console**.\n3. Füge diese Zeile ein und drücke Enter:\n\n```\n{snippet}\n```\n\n4. Kopiere die ausgegebene Zeichenkette — ohne die umgebenden Anführungszeichen.\n5. Füge sie unten ein.\n\nDas Token erneuert sich selbst, dieser Schritt ist also einmalig. Beachte: es gewährt vollen Zugriff auf dein Index-Konto — auch auf Notizen und Transkripte, nicht nur auf die Einkaufsliste.",
         "data": {
-          "refresh_token": "Firebase-Refresh-Token"
+          "refresh_token": "Firebase-Refresh-Token",
+          "encryption_key": "Verschlüsselungsschlüssel (nur wenn in der App aktiviert)"
         },
         "data_description": {
-          "refresh_token": "Eine lange Zeichenkette, beginnt mit A… — ohne Anführungszeichen einfügen."
+          "refresh_token": "Eine lange Zeichenkette, beginnt mit A… — ohne Anführungszeichen einfügen.",
+          "encryption_key": "Pebble-App → Index-Einstellungen → Encryption → Copy Key."
         }
       },
       "reauth_confirm": {
@@ -22,11 +24,29 @@
     "error": {
       "invalid_auth": "Firebase hat dieses Token abgelehnt. Kopiere es erneut aus einem frisch angemeldeten index.repebble.com-Tab.",
       "cannot_connect": "Firebase ist nicht erreichbar. Prüfe die Internetverbindung von Home Assistant und versuche es erneut.",
-      "wrong_account": "Dieses Token gehört zu einem anderen Pebble-Index-Konto als dem bereits eingerichteten."
+      "wrong_account": "Dieses Token gehört zu einem anderen Pebble-Index-Konto als dem bereits eingerichteten.",
+      "invalid_key": "Dieser Schlüssel ist nicht brauchbar. Copy Key in der Pebble-App liefert Base64 von 32 Bytes."
     },
     "abort": {
       "already_configured": "Dieses Pebble-Index-Konto ist bereits eingerichtet.",
       "reauth_successful": "Pebble Index wurde neu authentifiziert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Pebble Index",
+        "description": "Füge den Verschlüsselungsschlüssel dieses Index-Kontos ein: Pebble-App → Index-Einstellungen → Encryption → Copy Key. Leer lassen, wenn das Konto nicht verschlüsselt ist.",
+        "data": {
+          "encryption_key": "Verschlüsselungsschlüssel (nur wenn in der App aktiviert)"
+        },
+        "data_description": {
+          "encryption_key": "Pebble-App → Index-Einstellungen → Encryption → Copy Key."
+        }
+      }
+    },
+    "error": {
+      "invalid_key": "Dieser Schlüssel ist nicht brauchbar. Copy Key in der Pebble-App liefert Base64 von 32 Bytes."
     }
   }
 }

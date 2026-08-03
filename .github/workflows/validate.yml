@@ -26,12 +26,15 @@ jobs:
         with:
           category: integration
 
-  mapping:
-    name: Mapping self-check
+  selfcheck:
+    name: Self-checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+      # cryptography ships with Home Assistant, but not with a bare runner.
+      - run: pip install cryptography
       - run: python3 tests/test_mapping.py
+      - run: python3 tests/test_crypto.py

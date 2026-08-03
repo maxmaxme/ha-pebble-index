@@ -17,15 +17,22 @@ from datetime import UTC, datetime
 import aiohttp
 
 from .const import FIRESTORE_URL, REQUEST_TIMEOUT_SEC, TOKEN_URL
+from .crypto import (
+    EncryptionKeyError,
+    TamperedError,
+    decode_key,
+    decrypt_envelope,
+    encrypt_envelope,
+)
 from .firestore import (
     DELETE_FIELD_PATHS,
-    EDIT_FIELD_PATHS,
     EncryptedItemError,
     Item,
     ListDefinition,
     decode_item,
     decode_list,
     delete_item_fields,
+    edit_field_paths,
     edit_item_fields,
     new_item_fields,
 )
@@ -36,6 +43,12 @@ _AUTH_ERRORS = {"TOKEN_EXPIRED", "INVALID_REFRESH_TOKEN", "USER_DISABLED", "USER
 
 # Firestore caps the values of an array-contains-any filter.
 _MAX_LISTS_PER_QUERY = 30
+
+NEEDS_KEY_MESSAGE = (
+    "This Index account is end-to-end encrypted. Copy the encryption key from "
+    "the Pebble app (Index settings → Encryption → Copy Key) into this "
+    "integration's options."
+)
 
 
 class PebbleIndexError(Exception):
@@ -49,12 +62,32 @@ class PebbleIndexAuthError(PebbleIndexError):
 class PebbleIndexApi:
     """Minimal read/write access to one account's lists and items."""
 
-    def __init__(self, session: aiohttp.ClientSession, refresh_token: str) -> None:
+    def __init__(
+        self,
+        session: aiohttp.ClientSession,
+        refresh_token: str,
+        encryption_key: str | None = None,
+    ) -> None:
         self._session = session
         self._refresh_token = refresh_token
         self._id_token: str | None = None
         self._id_token_expiry = 0.0
         self._uid: str | None = None
+        # Raises EncryptionKeyError on a malformed key, so a typo surfaces in
+        # the config flow rather than on every poll.
+        self._key = decode_key(encryption_key) if encryption_key else None
+
+    @property
+    def _decrypt(self):
+        if self._key is None:
+            return None
+        return lambda envelope: decrypt_envelope(envelope, self._key)
+
+    @property
+    def _encrypt(self):
+        if self._key is None:
+            return None
+        return lambda plaintext: encrypt_envelope(plaintext, self._key)
 
     @property
     def uid(self) -> str | None:
@@ -95,11 +128,16 @@ class PebbleIndexApi:
     async def async_lists(self) -> list[ListDefinition]:
         """Every list in the feed, seeded and user-created alike."""
         body = await self._request("GET", f"/lists/{await self._account()}/lists")
-        return [
-            definition
-            for document in body.get("documents", [])
-            if (definition := decode_list(document)) is not None
-        ]
+        try:
+            return [
+                definition
+                for document in body.get("documents", [])
+                if (definition := decode_list(document, self._decrypt)) is not None
+            ]
+        except EncryptedItemError as err:
+            raise PebbleIndexError(NEEDS_KEY_MESSAGE) from err
+        except (EncryptionKeyError, TamperedError) as err:
+            raise PebbleIndexError(str(err)) from err
 
     async def async_items(self, list_ids: list[str]) -> dict[str, list[Item]]:
         """Live entries of the given lists, grouped by list id."""
@@ -140,21 +178,39 @@ class PebbleIndexApi:
             "POST", f"/items/{await self._account()}:runQuery", query
         )
 
-        try:
-            for row in result:
-                document = row.get("document")
-                if document is None:
-                    continue
-                if (item := decode_item(document)) is None:
-                    continue
-                for list_id in item.list_ids:
-                    if list_id in grouped:
-                        grouped[list_id].append(item)
-        except EncryptedItemError as err:
-            raise PebbleIndexError(
-                "This Index feed is end-to-end encrypted; the integration reads "
-                "plaintext items only. Turn encryption off in the Pebble app to sync."
-            ) from err
+        # One unreadable item must not take the readable lists down with it, so
+        # decoding is per-item and failures are counted instead of raised.
+        unreadable: list[str] = []
+        decoded = 0
+        for row in result:
+            document = row.get("document")
+            if document is None:
+                continue
+            try:
+                item = decode_item(document, self._decrypt)
+            except EncryptedItemError:
+                unreadable.append(NEEDS_KEY_MESSAGE)
+                continue
+            except (EncryptionKeyError, TamperedError) as err:
+                unreadable.append(str(err))
+                continue
+            decoded += 1
+            if item is None:
+                continue
+            for list_id in item.list_ids:
+                if list_id in grouped:
+                    grouped[list_id].append(item)
+
+        if unreadable:
+            # Nothing readable at all is a configuration problem, not a blip —
+            # surface it as a failed update so the entities say so.
+            if decoded == 0:
+                raise PebbleIndexError(unreadable[0])
+            _LOGGER.warning(
+                "Skipped %s unreadable item(s): %s",
+                len(unreadable),
+                unreadable[0],
+            )
         return grouped
 
     async def async_add(
@@ -169,7 +225,11 @@ class PebbleIndexApi:
         await self._request(
             "POST",
             f"/items/{await self._account()}/items?documentId={item_id}",
-            {"fields": new_item_fields(summary, _now(), list_id, list_kind, due)},
+            {
+                "fields": new_item_fields(
+                    summary, _now(), list_id, list_kind, due, self._encrypt
+                )
+            },
         )
 
     async def async_edit(
@@ -178,13 +238,18 @@ class PebbleIndexApi:
         summary: str,
         done: bool,
         due: datetime | None = None,
+        list_kind: str = "note",
     ) -> None:
         """Rename an entry, tick it off, or move its deadline."""
         await self._request(
             "PATCH",
             f"/items/{await self._account()}/items/{item_id}"
-            f"?{_update_mask(EDIT_FIELD_PATHS)}",
-            {"fields": edit_item_fields(summary, done, _now(), due)},
+            f"?{_update_mask(edit_field_paths(self._key is not None))}",
+            {
+                "fields": edit_item_fields(
+                    summary, done, _now(), due, list_kind, self._encrypt
+                )
+            },
         )
 
     async def async_delete(self, item_id: str) -> None:

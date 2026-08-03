@@ -61,12 +61,14 @@ custom_components/pebble_index/
   __init__.py        # setup_entry, PebbleIndexCoordinator (30 s poll)
   api.py             # token exchange + Firestore REST: lists, items, writes
   firestore.py       # PURE document <-> dataclass mapping; no HTTP, no HA imports
-  config_flow.py     # one field (refresh token) + reauth; supplies description placeholders
+  crypto.py          # the app's AES-256-CBC + HMAC envelope, read and write
+  config_flow.py     # refresh token + optional key, reauth, options flow for the key
   const.py           # DOMAIN, public Firebase ids, URLs, intervals
   todo.py            # one TodoListEntity per Index list
   brand/             # icon.png (256x256), icon@2x.png, logo.png
   translations/      # 12 languages; strings.json is a copy of en.json
-tests/test_mapping.py  # assert-based, stdlib only, runnable directly
+tests/test_mapping.py  # assert-based, stdlib only, fake crypto injected
+tests/test_crypto.py   # envelope vs an independent reference implementation
 .github/workflows/validate.yml  # hassfest + hacs/action + the self-check
 ```
 
@@ -75,7 +77,17 @@ part that breaks when Core Devices change their schema, so it has to be
 testable without either.
 
 ```bash
-python3 tests/test_mapping.py    # also runnable under pytest
+python3 tests/test_mapping.py    # stdlib only
+python3 tests/test_crypto.py     # needs cryptography — absent on macOS hosts
+```
+
+`cryptography` is missing from a plain host Python. The working way to run the
+crypto check locally is the real runtime:
+
+```bash
+rsync -a --delete --exclude __pycache__ --exclude .git ./ pi:/opt/home-infra/ha-data/_pebble_test/
+ssh pi 'docker exec home-assistant python3 /config/_pebble_test/tests/test_crypto.py'
+ssh pi 'rm -rf /opt/home-infra/ha-data/_pebble_test'
 ```
 
 ## Hard-won facts
@@ -107,9 +119,20 @@ Each of these cost a debugging cycle. Don't undo them.
   there before the CDN, gated on a `has_branding` check that is literally
   "is there a directory named `brand`". It is a cached property, so
   adding it needs a restart. HACS also requires this directory.
-- **End-to-end encryption is unsupported by design.** When an item
-  carries an `encrypted` envelope the coordinator fails with an
-  explanatory message rather than showing garbage. Don't add AES here.
+- **Encryption is `crypto.py`, and it must match the app byte for byte**:
+  key = base64 of 32 bytes (the app's "Copy Key"), HMAC key =
+  SHA-256("hmac" || key), wire = IV(16) || HMAC(32) || AES-256-CBC(PKCS7),
+  HMAC over IV + ciphertext, verified before decrypting. The envelope's
+  `ciphertext` holds the whole blob, and `iv` repeats its first 16 bytes.
+  `cryptography` is a HA core dependency, so it is not in the manifest.
+- **The envelope covers `title`, `body`, `dueAt`, `metadata` only.**
+  `done`, `deleted`, `parentListIds` and the timestamps stay in clear —
+  the app's own sync needs them. Writes encrypt when a key is configured,
+  so Home Assistant never puts the text back in the clear.
+- **One unreadable item must not take down the readable lists.** Decoding
+  is per-item; failures are counted and logged. Only when *nothing*
+  decoded does the poll fail, because then it is a configuration problem
+  (no key, or a key from another key set).
 
 ## hassfest rules that bite
 

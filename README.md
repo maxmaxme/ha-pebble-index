@@ -23,14 +23,12 @@ ring. Every list in the account is exposed, not just the shopping list.
 | **Deadlines** | An item's `dueAt` maps to the entity's due date. A reminder dictated to the ring arrives with its date; a due date set in Home Assistant is written back and the item becomes a reminder in the native UI (`repeat: one_time`, `notification: push`). |
 | **Deletes** | Soft, the way the app does it (`deleted: true`), so the tombstone replicates to your other devices instead of the item quietly reappearing. |
 | **Item kind** | Entries in a checklist-kind list get tickable-checkbox metadata, entries with a deadline get reminder metadata, everything else is a plain note — matching what the app writes itself. |
+| **Encryption** | End-to-end encrypted accounts are supported. Paste the key from the Pebble app (Index settings → Encryption → Copy Key) and items are decrypted on read and encrypted on write, so writing from Home Assistant does not put your text back in the clear. |
 | **Accounts** | Several Pebble accounts can be added; each is its own config entry with its own entities. |
 | **UI** | Config dialog and errors in en, ru, de, fr, es, it, pt-BR, nl, pl, sv, zh-Hans, ja. Brand icon included. |
 
 Not supported, deliberately:
 
-- **End-to-end encryption.** With encryption enabled in the Pebble app the item
-  text lives in an encrypted envelope; the entity goes unavailable with an
-  explanatory error rather than showing garbage.
 - **Ordering, descriptions.** `ItemDocument` has no ordering field, and item
   bodies were not needed for lists.
 - **Recordings and transcripts.** Reachable in the same Firestore, deliberately
@@ -85,6 +83,18 @@ Treat the token as a full credential for the account: it reads notes and
 transcripts too, not only the lists this integration exposes. Keep it in
 `secrets.yaml`.
 
+## Encryption
+
+If the account has end-to-end encryption turned on, the item text lives in an
+envelope (AES-256-CBC + HMAC-SHA256) and the cleartext fields are blank. Paste
+the key into the integration's options — Settings → Devices & services → Pebble
+Index → Configure — and it decrypts on read and encrypts on write. The key is
+`Copy Key` in the Pebble app under Index settings → Encryption.
+
+Without the key the lists cannot be read at all, and the entities say so. With a
+key from a *different* key set, the error names that specifically: the app
+stores a fingerprint of the key alongside each envelope.
+
 ## Using it as your only shopping list
 
 The entity is not a mirror of Home Assistant's built-in `shopping_list` — it is
@@ -118,7 +128,8 @@ integration.
 ## Tests
 
 ```bash
-python3 tests/test_mapping.py
+python3 tests/test_mapping.py   # stdlib only
+python3 tests/test_crypto.py    # needs cryptography (ships with Home Assistant)
 ```
 
 ## License

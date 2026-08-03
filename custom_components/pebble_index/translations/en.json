@@ -5,10 +5,12 @@
         "title": "Pebble Index",
         "description": "How to get the token:\n\n1. Open {index_link} and sign in with the same account as the Pebble mobile app.\n2. Press **F12** (macOS: **⌥⌘I**) and switch to the **Console** tab.\n3. Paste this line and press Enter:\n\n```\n{snippet}\n```\n\n4. Copy the string it prints, without the surrounding quotes.\n5. Paste it below.\n\nThe token renews itself, so this is a one-time step. Note that it grants full access to your Index account — notes and transcripts too, not only the shopping list.",
         "data": {
-          "refresh_token": "Firebase refresh token"
+          "refresh_token": "Firebase refresh token",
+          "encryption_key": "Encryption key (only if enabled in the app)"
         },
         "data_description": {
-          "refresh_token": "A long string starting with A… — paste it without quotes."
+          "refresh_token": "A long string starting with A… — paste it without quotes.",
+          "encryption_key": "Pebble app → Index settings → Encryption → Copy Key."
         }
       },
       "reauth_confirm": {
@@ -22,11 +24,29 @@
     "error": {
       "invalid_auth": "Firebase rejected this token. Copy it again from a freshly signed-in index.repebble.com tab.",
       "cannot_connect": "Could not reach Firebase. Check Home Assistant's internet access and try again.",
-      "wrong_account": "This token belongs to a different Pebble Index account than the one already configured."
+      "wrong_account": "This token belongs to a different Pebble Index account than the one already configured.",
+      "invalid_key": "That is not a usable key. Copy Key in the Pebble app gives base64 of 32 bytes."
     },
     "abort": {
       "already_configured": "This Pebble Index account is already configured.",
       "reauth_successful": "Pebble Index has been re-authenticated."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Pebble Index",
+        "description": "Paste the encryption key of this Index account: Pebble app → Index settings → Encryption → Copy Key. Leave it empty if the account is not encrypted.",
+        "data": {
+          "encryption_key": "Encryption key (only if enabled in the app)"
+        },
+        "data_description": {
+          "encryption_key": "Pebble app → Index settings → Encryption → Copy Key."
+        }
+      }
+    },
+    "error": {
+      "invalid_key": "That is not a usable key. Copy Key in the Pebble app gives base64 of 32 bytes."
     }
   }
 }

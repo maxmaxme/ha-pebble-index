@@ -5,10 +5,12 @@
         "title": "Pebble Index",
         "description": "Как получить токен:\n\n1. Откройте {index_link} и войдите тем же аккаунтом, что и в мобильном приложении Pebble.\n2. Нажмите **F12** (на macOS — **⌥⌘I**) и перейдите на вкладку **Console**.\n3. Вставьте эту строку и нажмите Enter:\n\n```\n{snippet}\n```\n\n4. Скопируйте выведенную строку — без кавычек по краям.\n5. Вставьте её в поле ниже.\n\nТокен обновляется сам, поэтому шаг разовый. Учтите: он даёт полный доступ к аккаунту Index — к заметкам и транскриптам тоже, не только к списку покупок.",
         "data": {
-          "refresh_token": "Refresh-токен Firebase"
+          "refresh_token": "Refresh-токен Firebase",
+          "encryption_key": "Ключ шифрования (только если включено в приложении)"
         },
         "data_description": {
-          "refresh_token": "Длинная строка, начинается с A… — вставляйте без кавычек."
+          "refresh_token": "Длинная строка, начинается с A… — вставляйте без кавычек.",
+          "encryption_key": "Приложение Pebble → настройки Index → Encryption → Copy Key."
         }
       },
       "reauth_confirm": {
@@ -22,11 +24,29 @@
     "error": {
       "invalid_auth": "Firebase отклонил этот токен. Скопируйте его заново со свежей залогиненной вкладки index.repebble.com.",
       "cannot_connect": "Не удалось связаться с Firebase. Проверьте доступ Home Assistant в интернет и повторите.",
-      "wrong_account": "Этот токен принадлежит другому аккаунту Pebble Index, не тому, который уже настроен."
+      "wrong_account": "Этот токен принадлежит другому аккаунту Pebble Index, не тому, который уже настроен.",
+      "invalid_key": "Такой ключ не подходит. Кнопка Copy Key в приложении даёт base64 из 32 байт."
     },
     "abort": {
       "already_configured": "Этот аккаунт Pebble Index уже настроен.",
       "reauth_successful": "Pebble Index переавторизован."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Pebble Index",
+        "description": "Вставьте ключ шифрования этого аккаунта Index: приложение Pebble → настройки Index → Encryption → Copy Key. Оставьте пустым, если шифрование не включено.",
+        "data": {
+          "encryption_key": "Ключ шифрования (только если включено в приложении)"
+        },
+        "data_description": {
+          "encryption_key": "Приложение Pebble → настройки Index → Encryption → Copy Key."
+        }
+      }
+    },
+    "error": {
+      "invalid_key": "Такой ключ не подходит. Кнопка Copy Key в приложении даёт base64 из 32 байт."
     }
   }
 }

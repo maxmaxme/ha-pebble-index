@@ -1,11 +1,13 @@
 {
   "domain": "pebble_index",
   "name": "Pebble Index",
-  "codeowners": ["@maxmaxme"],
+  "codeowners": [
+    "@maxmaxme"
+  ],
   "config_flow": true,
   "documentation": "https://github.com/maxmaxme/ha-pebble-index",
   "integration_type": "service",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/maxmaxme/ha-pebble-index/issues",
-  "version": "0.1.1"
+  "version": "0.2.0"
 }

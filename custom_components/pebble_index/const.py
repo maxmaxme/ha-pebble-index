@@ -3,6 +3,7 @@
 DOMAIN = "pebble_index"
 
 CONF_REFRESH_TOKEN = "refresh_token"
+CONF_ENCRYPTION_KEY = "encryption_key"
 
 # Public Firebase project identifiers of the Pebble mobile app / index.repebble.com.
 # The API key is not a secret: it identifies the project and is shipped in every

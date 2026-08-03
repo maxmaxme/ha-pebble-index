@@ -22,6 +22,7 @@ from firestore import (  # noqa: E402
     decode_item,
     decode_list,
     delete_item_fields,
+    edit_field_paths,
     edit_item_fields,
     encode_instant,
     item_metadata,
@@ -58,16 +59,16 @@ def test_checklist_list_gets_tickable_metadata():
 
 
 def test_plain_list_gets_note_metadata():
-    variant = item_metadata("note", None)["mapValue"]["fields"]
-    assert variant["type"]["stringValue"] == "note"
+    assert item_metadata("note", None) == {"type": "note"}
 
 
 def test_item_with_deadline_becomes_a_reminder():
-    # The app's own reminder tool writes exactly these two values.
-    variant = item_metadata("note", DUE)["mapValue"]["fields"]
-    assert variant["type"]["stringValue"] == "reminder"
-    assert variant["repeat"]["stringValue"] == "one_time"
-    assert variant["notification"]["stringValue"] == "push"
+    # The app's own reminder tool writes exactly these values.
+    assert item_metadata("note", DUE) == {
+        "type": "reminder",
+        "repeat": "one_time",
+        "notification": "push",
+    }
 
 
 def test_due_date_round_trip():
@@ -153,6 +154,75 @@ def test_untitled_list_falls_back_to_its_id():
     document = {"name": f"{PREFIX}/lists/uid42/lists/list_x", "fields": {}}
     definition = decode_list(document)
     assert definition is not None and definition.title == "list_x"
+
+
+def _fake_encrypt(plaintext: bytes) -> dict:
+    """Stand-in for the real envelope; keeps this file stdlib-only."""
+    return {
+        "version": 1,
+        "iv": "",
+        "ciphertext": plaintext.decode(),
+        "key_fingerprint": "fake",
+    }
+
+
+def _fake_decrypt(envelope: dict) -> bytes:
+    return envelope["ciphertext"].encode()
+
+
+def test_encrypted_write_blanks_the_cleartext_copies():
+    fields = new_item_fields(
+        "Milk", NOW, "list_shopping", KIND_CHECKLIST, DUE, _fake_encrypt
+    )
+    assert fields["title"] == {"stringValue": ""}
+    assert fields["dueAt"] == {"nullValue": None}
+    # `done` and the parents must stay readable — the phone's own sync uses them.
+    assert fields["done"] == {"booleanValue": False}
+    payload = json.loads(
+        fields["encrypted"]["mapValue"]["fields"]["ciphertext"]["stringValue"]
+    )
+    assert payload["title"] == "Milk"
+    assert payload["dueAt"] == {"epochSeconds": int(DUE.timestamp()), "nanosecondsOfSecond": 0}
+
+
+def test_encrypted_item_round_trips_with_a_key():
+    fields = new_item_fields(
+        "Milk", NOW, "list_shopping", KIND_CHECKLIST, DUE, _fake_encrypt
+    )
+    item = decode_item(_item_doc(fields), _fake_decrypt)
+    assert item is not None
+    assert item.summary == "Milk"
+    assert item.due == DUE
+
+
+def test_encrypted_list_title_round_trips():
+    document = {
+        "name": f"{PREFIX}/lists/uid42/lists/list_shopping",
+        "fields": {
+            "title": {"stringValue": ""},
+            "listKind": {"stringValue": "checklist"},
+            # The envelope is a Firestore map, so the fake is wrapped like one.
+            "encrypted": {
+                "mapValue": {
+                    "fields": {
+                        "ciphertext": {
+                            "stringValue": json.dumps({"title": "Shopping list"})
+                        }
+                    }
+                }
+            },
+        },
+    }
+    definition = decode_list(document, _fake_decrypt)
+    assert definition is not None and definition.title == "Shopping list"
+
+
+def test_metadata_is_only_overwritten_when_encrypting():
+    # In cleartext the app's own metadata is left alone, so editing an item from
+    # Home Assistant cannot flatten a recurring reminder set up on the ring.
+    assert "metadata" not in edit_field_paths(False)
+    assert "metadata" in edit_field_paths(True)
+    assert "metadata" not in edit_item_fields("Eggs", True, NOW)
 
 
 def test_manifest_keys_are_sorted():
