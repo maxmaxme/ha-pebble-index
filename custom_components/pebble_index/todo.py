@@ -47,6 +47,9 @@ class PebbleIndexList(CoordinatorEntity[PebbleIndexCoordinator], TodoListEntity)
         | TodoListEntityFeature.UPDATE_TODO_ITEM
         | TodoListEntityFeature.DELETE_TODO_ITEM
         | TodoListEntityFeature.SET_DUE_DATETIME_ON_ITEM
+        # The frontend sends `due_date` (not `due_datetime`) whenever the time
+        # half of the dialog is left empty, and HA validates on key presence.
+        | TodoListEntityFeature.SET_DUE_DATE_ON_ITEM
     )
 
     def __init__(
