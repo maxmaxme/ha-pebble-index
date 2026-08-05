@@ -105,7 +105,7 @@ class PebbleIndexList(CoordinatorEntity[PebbleIndexCoordinator], TodoListEntity)
         """Remove entries."""
         for uid in uids:
             await self._write(self.coordinator.api.async_delete(uid), refresh=False)
-        await self.coordinator.async_request_refresh()
+        await self.coordinator.async_refresh()
 
     async def _write(self, call, refresh: bool = True) -> None:
         """Run a write and re-read, so the UI shows what the cloud now holds."""
@@ -114,7 +114,9 @@ class PebbleIndexList(CoordinatorEntity[PebbleIndexCoordinator], TodoListEntity)
         except PebbleIndexError as err:
             raise HomeAssistantError(str(err)) from err
         if refresh:
-            await self.coordinator.async_request_refresh()
+            # Not async_request_refresh: its debouncer holds a 10 s cooldown, so
+            # a second edit within that window shows up minutes-late in the UI.
+            await self.coordinator.async_refresh()
 
 
 def _as_utc(item: TodoItem) -> datetime | None:
