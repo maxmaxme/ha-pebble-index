@@ -9,5 +9,5 @@
   "integration_type": "service",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/maxmaxme/ha-pebble-index/issues",
-  "version": "0.2.2"
+  "version": "0.2.3"
 }

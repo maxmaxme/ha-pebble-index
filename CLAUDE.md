@@ -105,10 +105,15 @@ Each of these cost a debugging cycle. Don't undo them.
   we cannot create indexes in it.
 - **Deletes are soft** (`deleted: true`), matching the app, so the
   tombstone replicates instead of the item reappearing.
-- **Item metadata is derived, not hardcoded**: a deadline makes it
-  `reminder` (`repeat: one_time`, `notification: push` — the values the
-  app's own tool writes), a checklist-kind list makes it `checklist`,
-  otherwise `note`. Mirrors `ItemFactory`.
+- **Item metadata is derived, not hardcoded**: a checklist-kind list makes
+  it `checklist`, a deadline makes it `reminder` (`repeat: one_time`,
+  `notification: push` — the values the app's own tool writes), otherwise
+  `note`. Mirrors `ItemFactory`. **Checklist wins over the deadline**: the
+  app's inline list row ticks `checklist` and nothing else
+  (`ObjectListDetail.kt`), so a shopping entry typed as `reminder` renders
+  with an empty gutter and cannot be checked off. The deadline survives in
+  `dueAt` regardless, and the seeded Reminders list is `listKind: note`, so
+  real reminders are unaffected.
 - **Lists are read once at setup**, items every 30 s. A list created on
   the phone appears after an entry reload.
 - **HA only loads `translations/<lang>.json`** for custom integrations.

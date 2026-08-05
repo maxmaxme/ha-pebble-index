@@ -71,6 +71,13 @@ def test_item_with_deadline_becomes_a_reminder():
     }
 
 
+def test_checklist_wins_over_a_deadline():
+    # The app's inline list row ticks `checklist` and nothing else, so a
+    # shopping entry typed as `reminder` cannot be checked off. `dueAt` still
+    # carries the deadline.
+    assert item_metadata("checklist", DUE) == {"type": "checklist"}
+
+
 def test_due_date_round_trip():
     item = decode_item(_item_doc(_shopping("Cake", DUE)))
     assert item is not None and item.due == DUE

@@ -151,10 +151,18 @@ def decode_item(document: dict, decrypt: Decryptor | None = None) -> Item | None
 def item_metadata(list_kind: str, due: datetime | None) -> dict:
     """Pick the metadata variant the native UI expects for this item.
 
-    Mirrors ItemFactory in the mobile app: entries with a deadline are
-    reminders, entries of a checklist-kind list get a tickable box, everything
-    else is a plain note.
+    Mirrors ItemFactory in the mobile app: entries of a checklist-kind list get
+    a tickable box, entries with a deadline are reminders, everything else is a
+    plain note.
+
+    Checklist wins over the deadline on purpose. The app's inline list row ticks
+    `checklist` and nothing else, so a shopping-list entry typed as `reminder`
+    renders with an empty gutter and cannot be checked off at all. The deadline
+    is not lost either way — it lives in `dueAt`, not in the metadata. The
+    seeded Reminders list is `listKind: note`, so real reminders are unaffected.
     """
+    if list_kind == KIND_CHECKLIST:
+        return {"type": "checklist"}
     if due is not None:
         # `one_time` / `push` are the values the app's own reminder tool writes.
         return {
@@ -162,8 +170,6 @@ def item_metadata(list_kind: str, due: datetime | None) -> dict:
             "repeat": "one_time",
             "notification": "push",
         }
-    if list_kind == KIND_CHECKLIST:
-        return {"type": "checklist"}
     return {"type": "note"}
 
 
